@@ -1,21 +1,26 @@
 import express from "express";
 import fetch from "node-fetch";
+import cors from "cors";
 
 const app = express();
+app.use(cors());
+
+const API = "http://bc1.ph1-mczie.fun:4094/server";
+const KEY = "GxzGQrGK1ZRKzhmGZRqoPOiqaEYuIrAIIxkkhXJAYXPSFmZZnd2RkwQm3nAIE7myDwwmeOQQ410osrKo2P1aNhf9BwTsac9IylN3";
 
 app.get("/status", async (req, res) => {
   try {
-    const r = await fetch("http://bc1.ph1-mczie.fun:4094/server", {
-      headers: {
-        Authorization: "Bearer GxzGQrGK1ZRKzhmGZRqoPOiqaEYuIrAIIxkkhXJAYXPSFmZZnd2RkwQm3nAIE7myDwwmeOQQ410osrKo2P1aNhf9BwTsac9IylN3"
-      }
+    const r = await fetch(API, {
+      headers: { Authorization: "Bearer " + KEY }
     });
 
-    const data = await r.json();
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: "Server offline" });
+    const json = await r.json();
+    res.json(json);
+  } catch (e) {
+    res.status(500).json({ error: "Server unreachable" });
   }
 });
 
-app.listen(3000, () => console.log("Backend running"));
+app.listen(3000, () => {
+  console.log("Backend running");
+});
